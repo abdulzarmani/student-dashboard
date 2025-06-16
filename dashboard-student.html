@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container" id="dashboard">
+    <h2 id="studentName">Welcome</h2>
+    <p><strong>Enrollment Year:</strong> <span id="enrollmentYear">-</span></p>
+    <p><strong>Outstanding Fees:</strong> GHS <span id="feesAmount">0</span></p>
+
+    <h3>Enrolled Courses</h3>
+    <ul id="courseList"></ul>
+
+    <a href="index.html" class="btn" onclick="localStorage.removeItem('loggedInUser')">Logout</a>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (!user || user.role !== "student") {
+      window.location.href = "index.html";
+    }
+
+    // Simulate SQL-style data
+    const courseEnrollments = [
+      {
+        studentEmail: "hakeemhenry@gmail.com",
+        courses: ["CPEN102 - Introduction to Programming"]
+      },
+      {
+        studentEmail: "student2@example.com",
+        courses: ["MATH101 - Calculus I", "CPEN102 - Intro to Programming"]
+      }
+    ];
+
+    // Show student details
+    document.getElementById("studentName").innerText = `Welcome, ${user.fullName}`;
+    document.getElementById("feesAmount").innerText = 1500 - (user.paid || 0);
+    document.getElementById("enrollmentYear").innerText = user.enrollmentYear || "2024";
+
+    // Show course list
+    const enrolled = courseEnrollments.find(e => e.studentEmail === user.email);
+    const courseList = document.getElementById("courseList");
+
+    if (enrolled) {
+      enrolled.courses.forEach(course => {
+        const li = document.createElement("li");
+        li.textContent = course;
+        courseList.appendChild(li);
+      });
+    } else {
+      courseList.innerHTML = "<li>No courses enrolled yet.</li>";
+    }
+  </script>
+</body>
+</html>
